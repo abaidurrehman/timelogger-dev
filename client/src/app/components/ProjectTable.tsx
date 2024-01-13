@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Switch from "react-switch";
-import projectApi from "../api/projects";
+import { ProjectApi } from "../api/project-api";
 import { Project, ProjectStatus } from "../shared/types";
 import { calculateDaysUntilDeadline, formatDeadline, getProjectStatusString } from "../shared/helpers";
 import ProjectTimeRegistration from "./ProjectTimeRegistration";
@@ -14,7 +14,7 @@ const ProjectTable: React.FC = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const data = await projectApi.getProjects();
+                const data = await ProjectApi.getProjects();
                 setProjects(data);
             } catch (error: any) {
                 console.error('Error fetching data:', error.message);

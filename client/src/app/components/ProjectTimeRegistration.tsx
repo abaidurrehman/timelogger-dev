@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { TimeRegistration } from "../shared/types";
-import timeregistrationApi from "../api/timeRegistration";
+import { TimeRegistrationApi } from "../api/time-registration-api";
 import { formatDateTime, calculateHoursWorked } from "../shared/helpers";
 
 interface ProjectTimeRegistrationProps {
@@ -13,7 +13,7 @@ const ProjectTimeRegistration: React.FC<ProjectTimeRegistrationProps> = ({ proje
     useEffect(() => {
         const fetchTimeRegistrations = async () => {
             try {
-                const times = await timeregistrationApi.getTimesForProject(projectId);
+                const times = await TimeRegistrationApi.getTimesForProject(projectId);
                 setTimeRegistrations(times);
             } catch (error: any) {
                 console.error('Error fetching time registrations:', error.message);

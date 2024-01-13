@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import projectApi from "../api/projects";
+import { ProjectApi } from "../api/project-api";
 import { Project, TimeRegistration } from "../shared/types";
-import timeregistrationApi from '../api/timeRegistration';
+import { TimeRegistrationApi } from '../api/time-registration-api';
 
 interface TimeRegistrationFormProps {
     onCloseForm: () => void;
@@ -23,7 +23,7 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const data = await projectApi.getProjects();
+                const data = await ProjectApi.getProjects();
                 setProjects(data);
             } catch (error: any) {
                 console.error('Error fetching data:', error.message);
@@ -79,7 +79,7 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
         const combinedEndTime = new Date(`${formData.date}T${formData.endTime}`);
 
         try {
-            const response = await timeregistrationApi.addTimeRegistration({
+            const response = await TimeRegistrationApi.addTimeRegistration({
                 ...formData,
                 date: new Date(formData.date).toISOString(),
                 startTime: combinedStartTime.toISOString(),
