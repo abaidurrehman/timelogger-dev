@@ -14,7 +14,9 @@ export interface Project {
 }
 
 export interface TimeRegistration {
+    id?: number;
     projectId: number;
+    FreelancerId: number;
     taskDescription: string;
     date: string;
     startTime: string;

@@ -17,6 +17,16 @@ export const formatDeadline = (deadline: string): string => {
     return new Date(deadline).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 };
 
+export const formatDateTime = (dateTimeString: string) => {
+    return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }).format(new Date(dateTimeString));
+};
+
+export const calculateHoursWorked = (startTime: string, endTime: string) => {
+    const start = new Date(startTime);
+    const end = new Date(endTime);
+    const hours = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
+    return hours.toFixed(2); 
+};
 
 
 export const calculateDaysUntilDeadline = (deadline: string): number => {

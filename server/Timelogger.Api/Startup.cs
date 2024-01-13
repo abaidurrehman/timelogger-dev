@@ -76,6 +76,16 @@ namespace Timelogger.Api
         private static void SeedDatabase(IServiceScope scope)
         {
             var context = scope.ServiceProvider.GetService<TimeloggerDbContext>();
+
+            var testFreelancer = new Freelancer()
+            {
+                Id = 1,
+                Name = "Abaid",
+
+            };
+
+            context.Freelancers.Add(testFreelancer);
+
             var testProject1 = new Project
             {
                 Id = 1,
@@ -113,6 +123,7 @@ namespace Timelogger.Api
             context.Projects.Add(testProject2);
             context.Projects.Add(testProject3);
             context.Projects.Add(testProject4);
+
             context.SaveChanges();
         }
     }

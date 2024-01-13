@@ -26,6 +26,28 @@ const timeregistrationApi = {
         }
     },
 
+    getTimesForProject: async (projectId: number): Promise<TimeRegistration[]> => {
+        try {
+            const response = await fetch(`${BASE_URL}/timeregistrations/GetTimesForProject/${projectId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.message);
+            }
+
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error(`Error fetching time registrations for project ${projectId}:`, error);
+            throw new Error(`Error fetching time registrations for project ${projectId}.`);
+        }
+    },
+    
     checkDuplicateTime: async (formData: TimeRegistration): Promise<boolean> => {
         try {
             const response = await fetch(`${BASE_URL}/timeregistrations`, {

@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
+import Switch from "react-switch";
 import projectApi from "../api/projects";
-import { Project } from "../shared/types";
-import { formatDeadline, getProjectStatusString } from "../shared/helpers";
+import { Project, ProjectStatus } from "../shared/types";
+import { calculateDaysUntilDeadline, formatDeadline, getProjectStatusString } from "../shared/helpers";
+import ProjectTimeRegistration from "./ProjectTimeRegistration";
 
 const ProjectTable: React.FC = () => {
     const [projects, setProjects] = useState<Project[]>([]);
+    const [selectedProjectId, setSelectedProjectId] = useState<number | null>(null);
     const [sortBy, setSortBy] = useState<string>('asc');
+    const [showCompleteProjects, setShowCompleteProjects] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -18,14 +22,7 @@ const ProjectTable: React.FC = () => {
         };
 
         fetchData();
-    }, []); // Empty dependency array means this effect runs once when the component mounts
-
-    const calculateDaysUntilDeadline = (deadline: string): number => {
-        const today = new Date();
-        const deadlineDate = new Date(deadline);
-        const timeDifference = deadlineDate.getTime() - today.getTime();
-        return Math.ceil(timeDifference / (1000 * 3600 * 24)); // Convert milliseconds to days
-    };
+    }, []);
 
     const getDeadlineBackgroundColor = (deadline: string): string => {
         const daysUntilDeadline = calculateDaysUntilDeadline(deadline);
@@ -38,7 +35,7 @@ const ProjectTable: React.FC = () => {
     };
 
     const sortProjects = (sortBy: string) => {
-        const sortedProjects = [...projects].sort((a, b) => {
+        return [...filteredProjects].sort((a, b) => {
             const dateA = new Date(a.deadline).getTime();
             const dateB = new Date(b.deadline).getTime();
 
@@ -50,14 +47,29 @@ const ProjectTable: React.FC = () => {
 
             return 0; // No sorting
         });
-
-        return sortedProjects;
     };
 
     const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedSortBy = event.target.value;
         setSortBy(selectedSortBy);
     };
+
+    const handleRowClick = (projectId: number) => {
+        setSelectedProjectId(projectId);
+    };
+
+    const toggleShowCompleteProjects = () => {
+        setShowCompleteProjects((prevShowCompleteProjects) => !prevShowCompleteProjects);
+    };
+
+
+    const filteredProjects = projects.filter((project) => {
+        if (showCompleteProjects) {
+            return true; // Show all projects
+        } else {
+            return project.status !== ProjectStatus.Complete;
+        }
+    });
 
     return (
         <div>
@@ -75,6 +87,20 @@ const ProjectTable: React.FC = () => {
                     <option value="asc">Ascending</option>
                     <option value="desc">Descending</option>
                 </select>
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Show Complete Projects:
+                </label>
+                <Switch
+                    checked={showCompleteProjects}
+                    onChange={toggleShowCompleteProjects}
+                    onColor="#86d3ff"
+                    onHandleColor="#2693e6"
+                    handleDiameter={20}
+                    uncheckedIcon={false}
+                    checkedIcon={false}
+                    height={15}
+                    width={40}
+                />
             </div>
             <table className="table-fixed w-full">
                 <thead className="bg-gray-200">
@@ -90,6 +116,7 @@ const ProjectTable: React.FC = () => {
                         <tr
                             key={project.id}
                             style={{ backgroundColor: getDeadlineBackgroundColor(project.deadline) }}
+                            onClick={() => handleRowClick(project.id)}
                         >
                             <td className="border px-4 py-2 w-12">{project.id}</td>
                             <td className="border px-4 py-2">{project.name}</td>
@@ -97,9 +124,11 @@ const ProjectTable: React.FC = () => {
                             <td className="border px-4 py-2">{getProjectStatusString(project.status)}</td>
                         </tr>
                     ))}
-
                 </tbody>
             </table>
+            {selectedProjectId && (
+                <ProjectTimeRegistration projectId={selectedProjectId} />
+            )}
         </div>
     );
 };

@@ -14,6 +14,7 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
         date: new Date().toISOString().split('T')[0], // Default to today's date
         startTime: '09:00',
         endTime: '09:30',
+        FreelancerId: 0
     });
 
     const [projects, setProjects] = useState<Project[]>([]);
@@ -83,6 +84,7 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
                 date: new Date(formData.date).toISOString(),
                 startTime: combinedStartTime.toISOString(),
                 endTime: combinedEndTime.toISOString(),
+                FreelancerId: 1
             });
             console.log(response.message);
 
@@ -93,6 +95,7 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
                 date: new Date().toISOString().split('T')[0],
                 startTime: '09:00',
                 endTime: '09:30',
+                FreelancerId: 0
             });
             setError({});
         } catch (err: any) {
