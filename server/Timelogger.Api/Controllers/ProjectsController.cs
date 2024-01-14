@@ -1,31 +1,40 @@
 ﻿using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Timelogger.Commands;
 using Timelogger.Entities;
+using Timelogger.Queries;
 
 namespace Timelogger.Api.Controllers
 {
     [Route("api/[controller]")]
     public class ProjectsController : Controller
     {
-        private readonly TimeloggerDbContext _context;
+        private readonly IMediator _mediator;
 
-        public ProjectsController(TimeloggerDbContext context)
+        public ProjectsController(IMediator mediator)
         {
-            _context = context;
+            _mediator = mediator;
         }
 
         // GET api/projects
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            return Ok(_context.Projects);
+            var projects = await _mediator.Send(new GetProjectsQuery());
+            return Ok(projects);
         }
 
         [HttpPost]
         public async Task<ActionResult<ApiResponse>> AddProject([FromBody] Project project)
         {
-            _context.Projects.Add(project);
-            await _context.SaveChangesAsync();
+            await _mediator.Send(new ProjectCommand()
+            {
+                Id = project.Id,
+                Name = project.Name,
+                Status = project.Status,
+                Deadline = project.Deadline,
+            });
 
             return Ok(new ApiResponse { Message = "Project added successfully." });
         }

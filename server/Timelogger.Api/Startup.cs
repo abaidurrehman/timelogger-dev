@@ -48,6 +48,8 @@ namespace Timelogger.Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Timer logger", Version = "v1" });
             });
+
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -77,11 +79,10 @@ namespace Timelogger.Api
         {
             var context = scope.ServiceProvider.GetService<TimeloggerDbContext>();
 
-            var testFreelancer = new Freelancer()
+            var testFreelancer = new Freelancer
             {
                 Id = 1,
-                Name = "Abaid",
-
+                Name = "Abaid"
             };
 
             context.Freelancers.Add(testFreelancer);

@@ -59,8 +59,10 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
         const startDateTime = new Date(`${formData.date}T${formData.startTime}`);
         const endDateTime = new Date(`${formData.date}T${formData.endTime}`);
 
-        if (endDateTime <= startDateTime) {
-            errors.endTime = 'End Time must be greater than Start Time';
+        const minimumEndTime = new Date(startDateTime.getTime() + 30 * 60000);
+
+        if (endDateTime <= startDateTime || endDateTime < minimumEndTime) {
+            errors.endTime = 'End Time must be greater than Start Time and at least 30 minutes later.';
         }
 
         setError(errors);
@@ -115,10 +117,10 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
 
     const generateTimeOptions = () => {
         const options = [];
-        for (let i = 0; i < 24 * 2; i++) {
-            const hour = Math.floor(i / 2);
-            const minute = i % 2 === 0 ? '00' : '30';
-            const time = `${hour.toString().padStart(2, '0')}:${minute}`;
+        for (let i = 0; i < 24 * 6; i++) { // Using 10-minute intervals, so 6 intervals per hour
+            const hour = Math.floor(i / 6);
+            const minute = (i % 6) * 10; // 10-minute intervals
+            const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
             options.push(time);
         }
         return options;
