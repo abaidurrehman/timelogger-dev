@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
+using Timelogger.Data.Repositories;
 using Timelogger.Dto;
 using Timelogger.Entities;
 
@@ -14,22 +15,19 @@ namespace Timelogger.Commands
 
     public class ProjectCommandHandler : IRequestHandler<ProjectCommand, int>
     {
-        private readonly TimeloggerDbContext _context;
         private readonly IMapper _mapper;
+        private readonly IProjectRepository _projectRepository;
 
-        public ProjectCommandHandler(TimeloggerDbContext context, IMapper mapper)
+        public ProjectCommandHandler(IProjectRepository projectRepository, IMapper mapper)
         {
-            _context = context;
+            _projectRepository = projectRepository;
             _mapper = mapper;
         }
+
         public async Task<int> Handle(ProjectCommand request, CancellationToken cancellationToken)
         {
-           var projectEntity = _mapper.Map<Project>(request.Project);
-
-            _context.Projects.Add(projectEntity);
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return projectEntity.Id;
+            var projectEntity = _mapper.Map<Project>(request.Project);
+            return await _projectRepository.AddProjectAsync(projectEntity, cancellationToken);
         }
     }
 }

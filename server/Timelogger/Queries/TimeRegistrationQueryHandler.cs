@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
+using Timelogger.Data.Repositories;
 using Timelogger.Dto;
 
 namespace Timelogger.Queries
@@ -17,22 +16,21 @@ namespace Timelogger.Queries
     public class
         TimeRegistrationQueryHandler : IRequestHandler<GetTimeRegistrationQueryQuery, IEnumerable<TimeRegistrationDto>>
     {
-        private readonly TimeloggerDbContext _context;
         private readonly IMapper _mapper;
+        private readonly ITimeRegistrationRepository _timeRegistrationRepository;
 
-        public TimeRegistrationQueryHandler(TimeloggerDbContext context, IMapper mapper)
+        public TimeRegistrationQueryHandler(ITimeRegistrationRepository timeRegistrationRepository, IMapper mapper)
         {
-            _context = context;
+            _timeRegistrationRepository = timeRegistrationRepository;
             _mapper = mapper;
         }
-        
+
         public async Task<IEnumerable<TimeRegistrationDto>> Handle(GetTimeRegistrationQueryQuery request,
             CancellationToken cancellationToken)
         {
-            var timeRegistrations = await _context.TimeRegistrations
-                .Where(tr => tr.ProjectId == request.ProjectId)
-                .ToListAsync(cancellationToken);
-
+            var timeRegistrations =
+                await _timeRegistrationRepository.GetTimeRegistrationsForProjectAsync(request.ProjectId,
+                    cancellationToken);
             return _mapper.Map<IEnumerable<TimeRegistrationDto>>(timeRegistrations);
         }
     }

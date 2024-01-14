@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
+using Timelogger.Data.Repositories;
 
 namespace Timelogger
 {
@@ -20,6 +21,10 @@ namespace Timelogger
                 //cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
                 //cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
             });
+
+            services.AddScoped<IProjectRepository, ProjectRepository>();
+
+            services.AddScoped<ITimeRegistrationRepository, TimeRegistrationRepository>();
 
             return services;
         }
