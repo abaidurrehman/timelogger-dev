@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Timelogger.Commands;
+using Timelogger.Dto;
 using Timelogger.Queries;
 
 namespace Timelogger.Api.Controllers
@@ -28,20 +28,12 @@ namespace Timelogger.Api.Controllers
 
             var command = new AddTimeRegistrationCommand
             {
-                ProjectId = timeRegistration.ProjectId,
-                FreelancerId = timeRegistration.FreelancerId,
-                TaskDescription = timeRegistration.TaskDescription,
-                Date = timeRegistration.Date,
-                StartTime = timeRegistration.StartTime,
-                EndTime = timeRegistration.EndTime
+                TimeRegistration = timeRegistration
             };
 
             var result = await _mediator.Send(command);
 
-            if (result.IsSuccess)
-            {
-                return Ok(new ApiResponse { Message = result.Message });
-            }
+            if (result.IsSuccess) return Ok(new ApiResponse { Message = result.Message });
 
             return BadRequest(new ApiResponse
             {
@@ -55,18 +47,7 @@ namespace Timelogger.Api.Controllers
         {
             var timeRegistrations = await _mediator.Send(new GetTimeRegistrationQueryQuery { ProjectId = projectId });
 
-            var timeRegistrationDtos = timeRegistrations.Select(tr => new TimeRegistrationDto
-            {
-                Id = tr.Id,
-                ProjectId = tr.ProjectId,
-                FreelancerId = tr.FreelancerId,
-                TaskDescription = tr.TaskDescription,
-                Date = tr.Date,
-                StartTime = tr.StartTime,
-                EndTime = tr.EndTime
-            }).ToList();
-
-            return Ok(timeRegistrationDtos);
+            return Ok(timeRegistrations);
         }
     }
 }

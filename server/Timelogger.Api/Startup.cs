@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Timelogger.Entities;
+using AutoMapper;
 
 namespace Timelogger.Api
 {
@@ -49,7 +50,12 @@ namespace Timelogger.Api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Timer logger", Version = "v1" });
             });
 
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
+            //services.AddAutoMapper(typeof(Startup));
+
+            //services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
+
+            services.AddApplicationServices();
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

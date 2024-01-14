@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Timelogger.Commands;
-using Timelogger.Entities;
+using Timelogger.Dto;
 using Timelogger.Queries;
 
 namespace Timelogger.Api.Controllers
@@ -19,21 +20,19 @@ namespace Timelogger.Api.Controllers
 
         // GET api/projects
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<ActionResult<IEnumerable<ProjectDto>>> Get()
         {
             var projects = await _mediator.Send(new GetProjectsQuery());
+
             return Ok(projects);
         }
 
         [HttpPost]
-        public async Task<ActionResult<ApiResponse>> AddProject([FromBody] Project project)
+        public async Task<ActionResult<ApiResponse>> AddProject([FromBody] ProjectDto project)
         {
-            await _mediator.Send(new ProjectCommand()
+            await _mediator.Send(new ProjectCommand
             {
-                Id = project.Id,
-                Name = project.Name,
-                Status = project.Status,
-                Deadline = project.Deadline,
+                Project = project
             });
 
             return Ok(new ApiResponse { Message = "Project added successfully." });
