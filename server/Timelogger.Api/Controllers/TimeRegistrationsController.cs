@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Timelogger.Behaviors;
 using Timelogger.Commands;
 using Timelogger.Dto;
 using Timelogger.Queries;
@@ -9,45 +11,52 @@ using Timelogger.Queries;
 namespace Timelogger.Api.Controllers
 {
     [Route("api/[controller]")]
-    public class TimeRegistrationsController : Controller
+    public class TimeRegistrationsController : BaseController
     {
-        private readonly IMediator _mediator;
-
-        public TimeRegistrationsController(IMediator mediator)
+        public TimeRegistrationsController(IMediator mediator) : base(mediator)
         {
-            _mediator = mediator;
         }
+
 
         [HttpPost]
         public async Task<ActionResult<ApiResponse>> AddTimeRegistration(
             [FromBody] TimeRegistrationDto timeRegistration)
         {
-            if (timeRegistration.StartTime >= timeRegistration.EndTime)
-                return BadRequest(new ApiResponse { Message = "End time should be greater than start time." });
-
-
-            var command = new AddTimeRegistrationCommand
+            try
             {
-                TimeRegistration = timeRegistration
-            };
+                var result =
+                    await Mediator.Send(new AddTimeRegistrationCommand { TimeRegistration = timeRegistration });
 
-            var result = await _mediator.Send(command);
+                if (result.IsSuccess)
+                {
+                    return Ok(new ApiResponse { Message = result.Message });
+                }
 
-            if (result.IsSuccess) return Ok(new ApiResponse { Message = result.Message });
-
-            return BadRequest(new ApiResponse
+                return BadRequest(new ApiResponse { Message = result.Message, Errors = result.Errors });
+            }
+            catch (ValidationException ex)
             {
-                Message = result.Message,
-                Errors = result.Errors
-            });
+                return BadRequest(new ApiResponse { Message = string.Join(Environment.NewLine, ex.Failures) });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new ApiResponse { Message = "An error occurred while processing the request." });
+            }
         }
 
         [HttpGet("GetTimesForProject/{projectId}")]
         public async Task<ActionResult<IEnumerable<TimeRegistrationDto>>> GetTimesForProject(int projectId)
         {
-            var timeRegistrations = await _mediator.Send(new GetTimeRegistrationQueryQuery { ProjectId = projectId });
-
-            return Ok(timeRegistrations);
+            try
+            {
+                var timeRegistrations =
+                    await Mediator.Send(new GetTimeRegistrationQueryQuery { ProjectId = projectId });
+                return Ok(timeRegistrations);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new ApiResponse { Message = "An error occurred while processing the request." });
+            }
         }
     }
 }

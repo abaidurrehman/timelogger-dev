@@ -43,7 +43,10 @@ namespace Timelogger.Api
 
             services.AddMvc(options => options.EnableEndpointRouting = false);
 
-            if (_environment.IsDevelopment()) services.AddCors();
+            if (_environment.IsDevelopment())
+            {
+                services.AddCors();
+            }
 
             services.AddSwaggerGen(c =>
             {
@@ -56,11 +59,13 @@ namespace Timelogger.Api
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
+            {
                 app.UseCors(builder => builder
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .SetIsOriginAllowed(origin => true)
                     .AllowCredentials());
+            }
 
             app.UseSwagger();
 

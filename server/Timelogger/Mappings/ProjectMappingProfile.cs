@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using System.Collections.Generic;
 using Timelogger.Dto;
 using Timelogger.Entities;
 
@@ -10,6 +11,7 @@ namespace Timelogger.Mappings
         {
             CreateMap<ProjectDto, Project>();
             CreateMap<Project, ProjectDto>();
+            CreateMap<List<Project>, List<ProjectDto>>();
         }
     }
 }

@@ -9,20 +9,18 @@ using Timelogger.Queries;
 namespace Timelogger.Api.Controllers
 {
     [Route("api/[controller]")]
-    public class ProjectsController : Controller
+    public class ProjectsController : BaseController
     {
-        private readonly IMediator _mediator;
-
-        public ProjectsController(IMediator mediator)
+        public ProjectsController(IMediator mediator) : base(mediator)
         {
-            _mediator = mediator;
         }
+
 
         // GET api/projects
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProjectDto>>> Get()
         {
-            var projects = await _mediator.Send(new GetProjectsQuery());
+            var projects = await Mediator.Send(new GetProjectsQuery());
 
             return Ok(projects);
         }
@@ -30,7 +28,7 @@ namespace Timelogger.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<ApiResponse>> AddProject([FromBody] ProjectDto project)
         {
-            await _mediator.Send(new ProjectCommand
+            await Mediator.Send(new ProjectCommand
             {
                 Project = project
             });

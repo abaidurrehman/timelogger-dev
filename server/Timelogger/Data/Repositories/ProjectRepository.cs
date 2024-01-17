@@ -24,6 +24,7 @@ namespace Timelogger.Data.Repositories
         {
             return await _context.Projects.FindAsync(projectId);
         }
+
         public async Task<int> AddProjectAsync(Project project, CancellationToken cancellationToken)
         {
             _context.Projects.Add(project);

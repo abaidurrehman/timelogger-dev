@@ -23,7 +23,7 @@ namespace Timelogger.Commands
             _projectRepository = projectRepository;
             _mapper = mapper;
         }
-
+        
         public async Task<int> Handle(ProjectCommand request, CancellationToken cancellationToken)
         {
             var projectEntity = _mapper.Map<Project>(request.Project);

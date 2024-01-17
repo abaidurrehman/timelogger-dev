@@ -4,16 +4,16 @@ namespace Timelogger.Commands
 {
     public class CommandResult
     {
-        public bool IsSuccess { get; private set; }
-        public string Message { get; private set; }
-        public List<string> Errors { get; private set; }
-
         private CommandResult(bool isSuccess, string message, List<string> errors)
         {
             IsSuccess = isSuccess;
             Message = message;
             Errors = errors;
         }
+
+        public bool IsSuccess { get; private set; }
+        public string Message { get; private set; }
+        public List<string> Errors { get; private set; }
 
         public static CommandResult Success(string message = "")
         {

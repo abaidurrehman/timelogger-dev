@@ -32,25 +32,22 @@ namespace Timelogger.Commands
             var timeRegistrationDto = command.TimeRegistration;
             var timeRegistrationEntity = _mapper.Map<TimeRegistration>(timeRegistrationDto);
 
-            if (timeRegistrationEntity.StartTime >= timeRegistrationEntity.EndTime)
-                return CommandResult.Fail("End time should be greater than start time.");
-
-            if ((timeRegistrationEntity.EndTime - timeRegistrationEntity.StartTime).TotalMinutes < 30)
-                return CommandResult.Fail("Duration between Start Time and End Time should be at least 30 minutes.");
-
             if (await _timeRegistrationRepository.IsDuplicateTimeRegistrationAsync(
                     timeRegistrationEntity.ProjectId,
                     timeRegistrationEntity.StartTime,
                     timeRegistrationEntity.EndTime,
                     cancellationToken))
+            {
                 return CommandResult.Fail("Duplicate time registration for the same project.");
+            }
 
             var project =
                 await _projectRepository.GetProjectByIdAsync(timeRegistrationEntity.ProjectId, cancellationToken);
 
             if (project.Status == ProjectStatus.Complete)
+            {
                 return CommandResult.Fail("Cannot add time registration to a completed project.");
-
+            }
 
             await _timeRegistrationRepository.AddTimeRegistrationAsync(timeRegistrationEntity, cancellationToken);
 
