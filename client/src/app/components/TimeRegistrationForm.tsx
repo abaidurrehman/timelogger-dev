@@ -5,18 +5,24 @@ import { TimeRegistrationApi } from '../api/time-registration-api';
 
 interface TimeRegistrationFormProps {
     onCloseForm: () => void;
+    onSuccessfulSubmit: () => void;
 }
 
-const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm }) => {
-    const [formData, setFormData] = useState<TimeRegistration>({
+const ErrorDisplay: React.FC<{ error?: string }> = ({ error }) => (
+    <p style={{ color: 'red' }}>{error}</p>
+);
+
+const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm,onSuccessfulSubmit  }) => {
+    const initialFormData: TimeRegistration = {
         projectId: 0,
         taskDescription: '',
-        date: new Date().toISOString().split('T')[0], // Default to today's date
+        date: new Date().toISOString().split('T')[0],
         startTime: '09:00',
         endTime: '09:30',
         FreelancerId: 0
-    });
+    };
 
+    const [formData, setFormData] = useState<TimeRegistration>(initialFormData);
     const [projects, setProjects] = useState<Project[]>([]);
     const [error, setError] = useState<{ [key: string]: string }>({});
 
@@ -91,17 +97,18 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
             console.log(response.message);
 
             // Clear the form and reset error state after successful submission
-            setFormData({
-                projectId: 0,
-                taskDescription: '',
-                date: new Date().toISOString().split('T')[0],
-                startTime: '09:00',
-                endTime: '09:30',
-                FreelancerId: 0
-            });
-            setError({});
+            if (!response.errors) {
+                setFormData(initialFormData);
+                onSuccessfulSubmit()
+            } else {
+                setError((prevError) => ({
+                    ...prevError,
+                    submit: response?.errors?.join(', ') ?? '',
+                }));
+            }
         } catch (err: any) {
-            setError({ submit: err.message });
+            console.log(err.message);
+            setError({ submit: err.errors.join(', ') });
         }
     };
 
@@ -117,9 +124,9 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
 
     const generateTimeOptions = () => {
         const options = [];
-        for (let i = 0; i < 24 * 6; i++) { // Using 10-minute intervals, so 6 intervals per hour
+        for (let i = 0; i < 24 * 6; i++) {
             const hour = Math.floor(i / 6);
-            const minute = (i % 6) * 10; // 10-minute intervals
+            const minute = (i % 6) * 10;
             const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
             options.push(time);
         }
@@ -136,7 +143,7 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
                     name="projectId"
                     value={formData.projectId}
                     onChange={handleChange}
-                    className="w-full p-2 border rounded"
+                    className={`w-full p-2 border rounded ${error.projectId ? 'border-red-500' : ''}`}
                 >
                     <option value={0}>Select Project</option>
                     {projects.map(project => (
@@ -145,7 +152,7 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
                         </option>
                     ))}
                 </select>
-                {error.projectId && <p style={{ color: 'red' }}>{error.projectId}</p>}
+                <ErrorDisplay error={error.projectId} />
             </div>
 
             <div className="mb-4">
@@ -157,9 +164,9 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
                     name="taskDescription"
                     value={formData.taskDescription}
                     onChange={handleChange}
-                    className="w-full p-2 border rounded"
+                    className={`w-full p-2 border rounded ${error.taskDescription ? 'border-red-500' : ''}`}
                 />
-                {error.taskDescription && <p style={{ color: 'red' }}>{error.taskDescription}</p>}
+                <ErrorDisplay error={error.taskDescription} />
             </div>
 
             <div className="mb-4">
@@ -171,9 +178,9 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
                     name="date"
                     value={formData.date}
                     onChange={handleChange}
-                    className="w-full p-2 border rounded"
+                    className={`w-full p-2 border rounded ${error.date ? 'border-red-500' : ''}`}
                 />
-                {error.date && <p style={{ color: 'red' }}>{error.date}</p>}
+                <ErrorDisplay error={error.date} />
             </div>
 
             <div className="mb-4">
@@ -184,7 +191,7 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
                     name="startTime"
                     value={formData.startTime}
                     onChange={handleChange}
-                    className="w-full p-2 border rounded"
+                    className={`w-full p-2 border rounded ${error.startTime ? 'border-red-500' : ''}`}
                 >
                     {generateTimeOptions().map(time => (
                         <option key={time} value={time}>
@@ -192,7 +199,7 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
                         </option>
                     ))}
                 </select>
-                {error.startTime && <p style={{ color: 'red' }}>{error.startTime}</p>}
+                <ErrorDisplay error={error.startTime} />
             </div>
 
             <div className="mb-4">
@@ -203,7 +210,7 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
                     name="endTime"
                     value={formData.endTime}
                     onChange={handleChange}
-                    className="w-full p-2 border rounded"
+                    className={`w-full p-2 border rounded ${error.endTime ? 'border-red-500' : ''}`}
                 >
                     {generateTimeOptions().map(time => (
                         <option key={time} value={time}>
@@ -211,10 +218,10 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
                         </option>
                     ))}
                 </select>
-                {error.endTime && <p style={{ color: 'red' }}>{error.endTime}</p>}
+                <ErrorDisplay error={error.endTime} />
             </div>
 
-            {error.submit && <p style={{ color: 'red' }}>{error.submit}</p>}
+            {error.submit && <ErrorDisplay error={error.submit} />}
 
             <div className="flex items-center justify-between">
                 <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">

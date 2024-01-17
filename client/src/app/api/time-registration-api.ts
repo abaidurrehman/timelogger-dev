@@ -2,7 +2,7 @@ import { ApiResponse, TimeRegistration } from "../shared/types";
 import { HttpHelper } from "./http-helper";
 
 export class TimeRegistrationApi {
-    private static API_ENDPOINT_TIMEREGISTRATIONS = "/timeregistrations";
+    private static API_ENDPOINT_TIMEREGISTRATIONS = "/timeregistration";
 
     static async addTimeRegistration(formData: TimeRegistration): Promise<ApiResponse> {
         return HttpHelper.makeApiRequest(this.API_ENDPOINT_TIMEREGISTRATIONS, 'POST', formData);

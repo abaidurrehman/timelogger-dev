@@ -16,13 +16,13 @@ using Xunit;
 
 namespace Timelogger.Api.Tests.Controllers
 {
-    public class TimeRegistrationsControllerTests
+    public class TimeRegistrationControllerTests
     {
         [Theory]
         [AutoNSubstituteData]
         public async Task AddTimeRegistration_ShouldReturnOkResult_WhenSuccessful(
             [Frozen] IMediator mediator,
-            [NoAutoProperties] TimeRegistrationsController sut,
+            [NoAutoProperties] TimeRegistrationController sut,
             TimeRegistrationDto timeRegistrationDto)
         {
             // Arrange
@@ -42,7 +42,7 @@ namespace Timelogger.Api.Tests.Controllers
         [AutoNSubstituteData]
         public async Task AddTimeRegistration_ShouldReturnBadRequestResult_WhenValidationFails(
             [Frozen] IMediator mediator,
-            [NoAutoProperties] TimeRegistrationsController sut,
+            [NoAutoProperties] TimeRegistrationController sut,
             TimeRegistrationDto timeRegistrationDto)
         {
             // Arrange
@@ -63,7 +63,7 @@ namespace Timelogger.Api.Tests.Controllers
         [AutoNSubstituteData]
         public async Task AddTimeRegistration_ShouldReturnInternalServerError_WhenExceptionOccurs(
             [Frozen] IMediator mediator,
-            [NoAutoProperties] TimeRegistrationsController sut,
+            [NoAutoProperties] TimeRegistrationController sut,
             TimeRegistrationDto timeRegistrationDto)
         {
             // Arrange
@@ -85,7 +85,7 @@ namespace Timelogger.Api.Tests.Controllers
         [AutoNSubstituteData]
         public async Task GetTimesForProject_ShouldReturnOkResult_WhenSuccessful(
             [Frozen] IMediator mediator,
-            [NoAutoProperties] TimeRegistrationsController sut,
+            [NoAutoProperties] TimeRegistrationController sut,
             int projectId,
             List<TimeRegistrationDto> timeRegistrations)
         {
@@ -106,7 +106,7 @@ namespace Timelogger.Api.Tests.Controllers
         [AutoNSubstituteData]
         public async Task GetTimesForProject_ShouldReturnInternalServerError_WhenExceptionOccurs(
             [Frozen] IMediator mediator,
-            [NoAutoProperties] TimeRegistrationsController sut,
+            [NoAutoProperties] TimeRegistrationController sut,
             int projectId)
         {
             // Arrange

@@ -6,9 +6,6 @@ const HEADERS = {
 
 export class HttpHelper {
     static async handleResponse(response: Response) {
-        if (!response.ok) {
-            throw new Error(`Error: ${response.status}`);
-        }
 
         return response.json();
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -11,9 +12,9 @@ using Timelogger.Queries;
 namespace Timelogger.Api.Controllers
 {
     [Route("api/[controller]")]
-    public class TimeRegistrationsController : BaseController
+    public class TimeRegistrationController : BaseController
     {
-        public TimeRegistrationsController(IMediator mediator) : base(mediator)
+        public TimeRegistrationController(IMediator mediator) : base(mediator)
         {
         }
 
@@ -24,9 +25,9 @@ namespace Timelogger.Api.Controllers
         {
             try
             {
-                var result =
-                    await Mediator.Send(new AddTimeRegistrationCommand { TimeRegistration = timeRegistration });
+                var addTimeRegistrationCommand = new AddTimeRegistrationCommand { TimeRegistration = timeRegistration };
 
+                var result = await Mediator.Send(addTimeRegistrationCommand);
                 if (result.IsSuccess)
                 {
                     return Ok(new ApiResponse { Message = result.Message });
@@ -36,7 +37,11 @@ namespace Timelogger.Api.Controllers
             }
             catch (ValidationException ex)
             {
-                return BadRequest(new ApiResponse { Message = string.Join(Environment.NewLine, ex.Failures) });
+                return BadRequest(new ApiResponse
+                {
+                    Message = "Validation failure",
+                    Errors = ex.Failures.Select(failure => failure.ErrorMessage).ToList()
+                });
             }
             catch (Exception)
             {
@@ -49,8 +54,9 @@ namespace Timelogger.Api.Controllers
         {
             try
             {
-                var timeRegistrations =
-                    await Mediator.Send(new GetTimeRegistrationQueryQuery { ProjectId = projectId });
+                var getTimeRegistrationQueryQuery = new GetTimeRegistrationQueryQuery { ProjectId = projectId };
+
+                var timeRegistrations = await Mediator.Send(getTimeRegistrationQueryQuery);
                 return Ok(timeRegistrations);
             }
             catch (Exception)

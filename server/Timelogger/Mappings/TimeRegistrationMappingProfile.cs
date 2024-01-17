@@ -11,7 +11,6 @@ namespace Timelogger.Mappings
         {
             CreateMap<TimeRegistrationDto, TimeRegistration>();
             CreateMap<TimeRegistration, TimeRegistrationDto>();
-            CreateMap<List<TimeRegistration>, List<TimeRegistrationDto>>();
         }
     }
 }

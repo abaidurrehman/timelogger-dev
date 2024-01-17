@@ -25,4 +25,5 @@ export interface TimeRegistration {
 
 export interface ApiResponse {
     message: string;
+    errors?: string[];
 }
