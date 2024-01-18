@@ -7,6 +7,18 @@ namespace Timelogger.Commands
     {
         public AddTimeRegistrationCommandValidator()
         {
+            RuleFor(v => v.TimeRegistration.ProjectId)
+                .GreaterThan(0)
+                .WithMessage("Project is required.");
+
+            RuleFor(v => v.TimeRegistration.FreelancerId)
+                .GreaterThan(0)
+                .WithMessage("Freelancer is required.");
+
+            RuleFor(v => v.TimeRegistration.TaskDescription)
+                .NotEmpty()
+                .WithMessage("Task description is required.");
+
             RuleFor(v => v.TimeRegistration.StartTime)
                 .LessThan(v => v.TimeRegistration.EndTime)
                 .WithMessage("End time should be greater than start time.");

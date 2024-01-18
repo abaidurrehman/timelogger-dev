@@ -11,7 +11,6 @@ namespace Timelogger.Data.Repositories
         Task<IEnumerable<TimeRegistration>> GetTimeRegistrationsForProjectAsync(int projectId,
             CancellationToken cancellationToken);
 
-
         Task<int> AddTimeRegistrationAsync(TimeRegistration timeRegistration, CancellationToken cancellationToken);
 
         Task<bool> IsDuplicateTimeRegistrationAsync(int projectId, DateTime startTime, DateTime endTime,

@@ -29,9 +29,4 @@
 		<ProjectReference Include="..\Timelogger\Timelogger.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Data\" />
-	  <Folder Include="Data\Repositories\" />
-	</ItemGroup>
-
 </Project>
