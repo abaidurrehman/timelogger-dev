@@ -97,7 +97,7 @@ namespace Timelogger.Api
             {
                 Id = 1,
                 Name = "e-conomic Interview",
-                Deadline = DateTime.Today.AddDays(8),
+                Deadline = DateTime.Today.AddDays(15),
                 Status = ProjectStatus.New
             };
 
@@ -113,7 +113,7 @@ namespace Timelogger.Api
             {
                 Id = 3,
                 Name = "Approval Workflow",
-                Deadline = DateTime.Today.AddDays(3),
+                Deadline = DateTime.Today.AddDays(20),
                 Status = ProjectStatus.InProgress
             };
 

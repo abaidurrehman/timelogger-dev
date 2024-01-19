@@ -62,7 +62,6 @@ const ProjectTable: React.FC = () => {
         setShowCompleteProjects((prevShowCompleteProjects) => !prevShowCompleteProjects);
     };
 
-
     const filteredProjects = projects.filter((project) => {
         if (showCompleteProjects) {
             return true; // Show all projects
@@ -108,20 +107,26 @@ const ProjectTable: React.FC = () => {
                         <th className="border px-4 py-2 w-12">#</th>
                         <th className="border px-4 py-2">Project Name</th>
                         <th className="border px-4 py-2">Deadline</th>
+                        <th className="border px-4 py-2">Days until Deadline</th>
                         <th className="border px-4 py-2">Status</th>
+                        <th className="border px-4 py-2">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {sortProjects(sortBy).map((project) => (
                         <tr
                             key={project.id}
-                            style={{ backgroundColor: getDeadlineBackgroundColor(project.deadline) }}
+                            style={{ backgroundColor: getDeadlineBackgroundColor(project.deadline), cursor:"pointer" }}
                             onClick={() => handleRowClick(project.id)}
                         >
                             <td className="border px-4 py-2 w-12">{project.id}</td>
                             <td className="border px-4 py-2">{project.name}</td>
                             <td className="border px-4 py-2">{formatDeadline(project.deadline)}</td>
+                            <td className="border px-4 py-2">{calculateDaysUntilDeadline(project.deadline)}</td>
                             <td className="border px-4 py-2">{getProjectStatusString(project.status)}</td>
+                            <td className="border px-4 py-2">
+                                <button onClick={() => handleRowClick(project.id)} className="btn btn-primary">View Time Registrations</button>
+                            </td>
                         </tr>
                     ))}
                 </tbody>

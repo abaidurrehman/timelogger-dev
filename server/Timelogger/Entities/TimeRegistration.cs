@@ -15,5 +15,7 @@ namespace Timelogger.Entities
         public DateTime StartTime { get; set; }
 
         public DateTime EndTime { get; set; }
+
+        public DateTime LoggedDateTime { get; set; } = DateTime.Now;
     }
 }

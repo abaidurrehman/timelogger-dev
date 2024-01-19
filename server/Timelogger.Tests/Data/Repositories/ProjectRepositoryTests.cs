@@ -1,89 +1,87 @@
-﻿//using AutoFixture;
-//using FluentAssertions;
-//using Microsoft.EntityFrameworkCore;
-//using NSubstitute;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Threading;
-//using System.Threading.Tasks;
-//using Timelogger.Data.Repositories;
-//using Timelogger.Data;
-//using Timelogger.Entities;
-//using Xunit;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
+using Timelogger.Data;
+using Timelogger.Data.Repositories;
+using Timelogger.Entities;
+using Timelogger.Tests.Helper;
+using Xunit;
 
-//public class ProjectRepositoryTests
-//{
-//    [Fact]
-//    public async Task GetAllProjectsAsync_ShouldReturnAllProjects()
-//    {
-//        // Arrange
-//        var fixture = new Fixture();
-//        var projects = fixture.CreateMany<Project>().ToList();
+namespace Timelogger.Tests.Data.Repositories
+{
+    public class ProjectRepositoryTests
+    {
+        private TimeloggerDbContext CreateInMemoryDbContext()
+        {
+            var options = new DbContextOptionsBuilder<TimeloggerDbContext>()
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                .Options;
 
-//        var mockSet = Substitute.For<DbSet<Project>, IQueryable<Project>>();
-//        mockSet.Provider.Returns(projects.AsQueryable().Provider);
-//        mockSet.Expression.Returns(projects.AsQueryable().Expression);
-//        mockSet.ElementType.Returns(projects.AsQueryable().ElementType);
-//        mockSet.GetEnumerator().Returns(projects.AsQueryable().GetEnumerator());
+            return new TimeloggerDbContext(options);
+        }
 
-//        var mockContext = Substitute.For<TimeloggerDbContext>();
-//        mockContext.Projects.Returns(mockSet);
+        [Theory]
+        [AutoNSubstituteData]
+        public async Task GetAllProjectsAsync_ReturnsProjects(List<Project> projects)
+        {
+            // Arrange
+            using (var dbContextInMemory = CreateInMemoryDbContext())
+            {
+                dbContextInMemory.Projects.AddRange(projects);
+                await dbContextInMemory.SaveChangesAsync();
 
-//        var repository = new ProjectRepository(mockContext);
+                var projectRepository = new ProjectRepository(dbContextInMemory);
 
-//        // Act
-//        var result = await repository.GetAllProjectsAsync(CancellationToken.None);
+                // Act
+                var result = await projectRepository.GetAllProjectsAsync(CancellationToken.None);
 
-//        // Assert
-//        result.Should().BeEquivalentTo(projects);
-//    }
+                // Assert
+                result.Should().NotBeNull();
+                result.Should().HaveCount(projects.Count);
+                result.Should().BeEquivalentTo(projects);
+            }
+        }
 
-//    [Fact]
-//    public async Task GetProjectByIdAsync_ShouldReturnProjectById()
-//    {
-//        // Arrange
-//        var fixture = new Fixture();
-//        var projects = fixture.CreateMany<Project>().ToList();
+        [Theory]
+        [AutoNSubstituteData]
+        public async Task GetProjectByIdAsync_ReturnsProject(Project project)
+        {
+            // Arrange
+            await using (var dbContextInMemory = CreateInMemoryDbContext())
+            {
+                dbContextInMemory.Projects.Add(project);
+                await dbContextInMemory.SaveChangesAsync();
 
-//        var mockSet = Substitute.For<DbSet<Project>>();
-//        mockSet.FindAsync(Arg.Any<object[]>()).Returns((object[] ids) =>
-//        {
-//            var projectId = (int)ids[0];
-//            return Task.FromResult(projects.FirstOrDefault(p => p.Id == projectId));
-//        });
+                var projectRepository = new ProjectRepository(dbContextInMemory);
 
-//        var mockContext = Substitute.For<TimeloggerDbContext>();
-//        mockContext.Projects.Returns(mockSet);
+                // Act
+                var result = await projectRepository.GetProjectByIdAsync(project.Id, CancellationToken.None);
 
-//        var repository = new ProjectRepository(mockContext);
+                // Assert
+                result.Should().NotBeNull();
+                result.Should().BeEquivalentTo(project);
+            }
+        }
 
-//        // Act
-//        var result = await repository.GetProjectByIdAsync(2, CancellationToken.None);
+        [Theory]
+        [AutoNSubstituteData]
+        public async Task AddProjectAsync_AddsProject(Project project)
+        {
+            // Arrange
+            using (var dbContextInMemory = CreateInMemoryDbContext())
+            {
+                var projectRepository = new ProjectRepository(dbContextInMemory);
 
-//        // Assert
-//        result.Should().NotBeNull();
-//        result.Id.Should().Be(2);
-//    }
+                // Act
+                var result = await projectRepository.AddProjectAsync(project, CancellationToken.None);
 
-//    [Fact]
-//    public async Task AddProjectAsync_ShouldAddProject()
-//    {
-//        // Arrange
-//        var fixture = new Fixture();
-//        var project = fixture.Create<Project>();
-
-//        var mockSet = Substitute.For<DbSet<Project>>();
-//        var mockContext = Substitute.For<TimeloggerDbContext>();
-//        mockContext.Projects.Returns(mockSet);
-
-//        var repository = new ProjectRepository(mockContext);
-
-//        // Act
-//        var result = await repository.AddProjectAsync(project, CancellationToken.None);
-
-//        // Assert
-//        mockSet.Received(1).Add(project);
-//        await mockContext.Received(1).SaveChangesAsync(CancellationToken.None);
-//        result.Should().Be(project.Id);
-//    }
-//}
+                // Assert
+                result.Should().BeGreaterThan(0);
+                dbContextInMemory.Projects.Should().ContainEquivalentOf(project);
+            }
+        }
+    }
+}

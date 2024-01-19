@@ -12,7 +12,7 @@ const ErrorDisplay: React.FC<{ error?: string }> = ({ error }) => (
     <p style={{ color: 'red' }}>{error}</p>
 );
 
-const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm,onSuccessfulSubmit  }) => {
+const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm, onSuccessfulSubmit }) => {
     const initialFormData = {
         projectId: 0,
         taskDescription: '',
@@ -21,7 +21,7 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
         endTime: '09:30',
         FreelancerId: 0
     };
-    
+
     const [formData, setFormData] = useState<TimeRegistration>(initialFormData);
     const [projects, setProjects] = useState<Project[]>([]);
     const [error, setError] = useState<{ [key: string]: string }>({});
@@ -99,7 +99,7 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
             // Clear the form and reset error state after successful submission
             if (!response.errors) {
                 setFormData(initialFormData);
-                onSuccessfulSubmit()
+                onSuccessfulSubmit();
             } else {
                 setError((prevError) => ({
                     ...prevError,
