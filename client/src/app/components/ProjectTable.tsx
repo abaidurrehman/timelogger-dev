@@ -74,7 +74,7 @@ const ProjectTable: React.FC = () => {
         <div>
             <h2>Projects</h2>
             <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="sortDropdown">
                     Sort by Deadline:
                 </label>
                 <select

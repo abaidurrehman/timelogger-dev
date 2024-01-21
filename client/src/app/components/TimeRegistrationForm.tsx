@@ -29,8 +29,8 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const data = await ProjectApi.getProjects();
-                setProjects(data);
+            const data = await ProjectApi.getProjects();
+              setProjects(data);
             } catch (error: any) {
                 console.error('Error fetching data:', error.message);
             }
@@ -94,7 +94,6 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
                 endTime: combinedEndTime.toISOString(),
                 FreelancerId: 1
             });
-            console.log(response.message);
 
             // Clear the form and reset error state after successful submission
             if (!response.errors) {
@@ -140,6 +139,7 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
                     Project:
                 </label>
                 <select
+                    id="projectId"
                     name="projectId"
                     value={formData.projectId}
                     onChange={handleChange}
@@ -151,6 +151,7 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
                             {project.name}
                         </option>
                     ))}
+
                 </select>
                 <ErrorDisplay error={error.projectId} />
             </div>
@@ -162,6 +163,7 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
                 <input
                     type="text"
                     name="taskDescription"
+                    id="taskDescription"
                     value={formData.taskDescription}
                     onChange={handleChange}
                     className={`w-full p-2 border rounded ${error.taskDescription ? 'border-red-500' : ''}`}
@@ -176,6 +178,7 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
                 <input
                     type="date"
                     name="date"
+                    id="date"
                     value={formData.date}
                     onChange={handleChange}
                     className={`w-full p-2 border rounded ${error.date ? 'border-red-500' : ''}`}
@@ -189,6 +192,7 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
                 </label>
                 <select
                     name="startTime"
+                    id="startTime"
                     value={formData.startTime}
                     onChange={handleChange}
                     className={`w-full p-2 border rounded ${error.startTime ? 'border-red-500' : ''}`}
@@ -208,6 +212,7 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
                 </label>
                 <select
                     name="endTime"
+                    id="endTime"
                     value={formData.endTime}
                     onChange={handleChange}
                     className={`w-full p-2 border rounded ${error.endTime ? 'border-red-500' : ''}`}
@@ -224,7 +229,7 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
             {error.submit && <ErrorDisplay error={error.submit} />}
 
             <div className="flex items-center justify-between">
-                <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                <button type="submit" name="submit" data-testid="submit-button" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                     Submit
                 </button>
                 <button
