@@ -29,8 +29,8 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
     useEffect(() => {
         const fetchData = async () => {
             try {
-            const data = await ProjectApi.getProjects();
-              setProjects(data);
+                const data = await ProjectApi.getProjects();
+                setProjects(data);
             } catch (error: any) {
                 console.error('Error fetching data:', error.message);
             }
@@ -64,7 +64,6 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
 
         const startDateTime = new Date(`${formData.date}T${formData.startTime}`);
         const endDateTime = new Date(`${formData.date}T${formData.endTime}`);
-
         const minimumEndTime = new Date(startDateTime.getTime() + 30 * 60000);
 
         if (endDateTime <= startDateTime || endDateTime < minimumEndTime) {
@@ -95,7 +94,6 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
                 FreelancerId: 1
             });
 
-            // Clear the form and reset error state after successful submission
             if (!response.errors) {
                 setFormData(initialFormData);
                 onSuccessfulSubmit();
@@ -106,8 +104,8 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
                 }));
             }
         } catch (err: any) {
-            console.log(err.message);
-            setError({ submit: err.errors.join(', ') });
+            console.error(err.message);
+            setError({ submit: err.errors?.join(', ') || '' });
         }
     };
 
@@ -132,6 +130,14 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
         return options;
     };
 
+    const inputStyles = `w-full p-2 border rounded ${error.projectId ? 'border-red-500' : ''}`;
+
+    const renderTimeOptions = () => generateTimeOptions().map(time => (
+        <option key={time} value={time}>
+            {time}
+        </option>
+    ));
+
     return (
         <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
             <div className="mb-4">
@@ -143,7 +149,7 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
                     name="projectId"
                     value={formData.projectId}
                     onChange={handleChange}
-                    className={`w-full p-2 border rounded ${error.projectId ? 'border-red-500' : ''}`}
+                    className={inputStyles}
                 >
                     <option value={0}>Select Project</option>
                     {projects.map(project => (
@@ -151,7 +157,6 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
                             {project.name}
                         </option>
                     ))}
-
                 </select>
                 <ErrorDisplay error={error.projectId} />
             </div>
@@ -195,13 +200,9 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
                     id="startTime"
                     value={formData.startTime}
                     onChange={handleChange}
-                    className={`w-full p-2 border rounded ${error.startTime ? 'border-red-500' : ''}`}
+                    className={inputStyles}
                 >
-                    {generateTimeOptions().map(time => (
-                        <option key={time} value={time}>
-                            {time}
-                        </option>
-                    ))}
+                    {renderTimeOptions()}
                 </select>
                 <ErrorDisplay error={error.startTime} />
             </div>
@@ -215,13 +216,9 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
                     id="endTime"
                     value={formData.endTime}
                     onChange={handleChange}
-                    className={`w-full p-2 border rounded ${error.endTime ? 'border-red-500' : ''}`}
+                    className={inputStyles}
                 >
-                    {generateTimeOptions().map(time => (
-                        <option key={time} value={time}>
-                            {time}
-                        </option>
-                    ))}
+                    {renderTimeOptions()}
                 </select>
                 <ErrorDisplay error={error.endTime} />
             </div>
