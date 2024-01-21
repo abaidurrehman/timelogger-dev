@@ -22,7 +22,7 @@ namespace Timelogger.Tests.Queries
         public async Task Handle_ShouldReturnMappedProjects(
             [Frozen] IProjectRepository projectRepository,
             [Frozen] IMapper mapper,
-            ProjectQueryHandler handler,
+            ProjectQueryHandler sut,
             GetProjectsQuery query,
             List<Project> projectsFromRepository,
             List<ProjectDto> mappedProjects)
@@ -34,7 +34,7 @@ namespace Timelogger.Tests.Queries
                 .Returns(mappedProjects);
 
             // Act
-            var result = await handler.Handle(query, CancellationToken.None);
+            var result = await sut.Handle(query, CancellationToken.None);
 
             // Assert
             await projectRepository.Received(1).GetAllProjectsAsync(Arg.Any<CancellationToken>());
@@ -47,7 +47,7 @@ namespace Timelogger.Tests.Queries
         public async Task Handle_ShouldMapProjectsUsingMapper(
             [Frozen] IProjectRepository projectRepository,
             [Frozen] IMapper mapper,
-            ProjectQueryHandler handler,
+            ProjectQueryHandler sut,
             GetProjectsQuery query,
             IEnumerable<Project> projectsFromRepository)
         {
@@ -56,7 +56,7 @@ namespace Timelogger.Tests.Queries
                 .Returns(projectsFromRepository);
 
             // Act
-            await handler.Handle(query, CancellationToken.None);
+            await sut.Handle(query, CancellationToken.None);
 
             // Assert
             mapper.Received(1).Map<IEnumerable<ProjectDto>>(projectsFromRepository);
@@ -67,7 +67,7 @@ namespace Timelogger.Tests.Queries
         public async Task Handle_ShouldReturnEmptyList_WhenRepositoryReturnsNull(
             [Frozen] IProjectRepository projectRepository,
             [Frozen] IMapper mapper,
-            ProjectQueryHandler handler,
+            ProjectQueryHandler sut,
             GetProjectsQuery query)
         {
             // Arrange
@@ -77,7 +77,7 @@ namespace Timelogger.Tests.Queries
                 .Returns(Enumerable.Empty<ProjectDto>());
 
             // Act
-            var result = await handler.Handle(query, CancellationToken.None);
+            var result = await sut.Handle(query, CancellationToken.None);
 
             // Assert
             result.Should().BeEmpty();

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
@@ -51,7 +50,8 @@ namespace Timelogger.Api.Tests.Queries
             GetTimeRegistrationQueryQuery query)
         {
             // Arrange
-            timeRegistrationRepository.GetTimeRegistrationsForProjectAsync(query.ProjectId, Arg.Any<CancellationToken>())
+            timeRegistrationRepository
+                .GetTimeRegistrationsForProjectAsync(query.ProjectId, Arg.Any<CancellationToken>())
                 .Returns(new List<TimeRegistration>());
 
 

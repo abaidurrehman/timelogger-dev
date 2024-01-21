@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using System.Collections.Generic;
 using Timelogger.Dto;
 using Timelogger.Entities;
 

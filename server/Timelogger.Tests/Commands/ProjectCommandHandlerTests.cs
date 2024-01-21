@@ -19,7 +19,7 @@ namespace Timelogger.Tests.Commands
         public async Task Handle_ShouldReturnAddedProjectId(
             [Frozen] IProjectRepository projectRepository,
             [Frozen] IMapper mapper,
-            ProjectCommandHandler handler,
+            ProjectCommandHandler sut,
             ProjectCommand command,
             Project projectEntity,
             int projectId)
@@ -32,7 +32,7 @@ namespace Timelogger.Tests.Commands
                 .Returns(projectId);
 
             // Act
-            var result = await handler.Handle(command, CancellationToken.None);
+            var result = await sut.Handle(command, CancellationToken.None);
 
             // Assert
             result.Should().Be(projectId);
@@ -43,7 +43,7 @@ namespace Timelogger.Tests.Commands
         public async Task Handle_ShouldMapProjectDtoToProjectEntity(
             [Frozen] IProjectRepository projectRepository,
             [Frozen] IMapper mapper,
-            ProjectCommandHandler handler,
+            ProjectCommandHandler sut,
             ProjectCommand command,
             Project projectEntity,
             int projectId)
@@ -56,7 +56,7 @@ namespace Timelogger.Tests.Commands
                 .Returns(projectId);
 
             // Act
-            await handler.Handle(command, CancellationToken.None);
+            await sut.Handle(command, CancellationToken.None);
 
             // Assert
             mapper.Received(1).Map<Project>(command.Project);
@@ -67,7 +67,7 @@ namespace Timelogger.Tests.Commands
         public async Task Handle_ShouldCallAddProjectAsyncOnRepository(
             [Frozen] IProjectRepository projectRepository,
             [Frozen] IMapper mapper,
-            ProjectCommandHandler handler,
+            ProjectCommandHandler sut,
             ProjectCommand command,
             Project projectEntity)
         {
@@ -76,7 +76,7 @@ namespace Timelogger.Tests.Commands
                 .Returns(projectEntity);
 
             // Act
-            await handler.Handle(command, CancellationToken.None);
+            await sut.Handle(command, CancellationToken.None);
 
             // Assert
             await projectRepository.Received(1).AddProjectAsync(projectEntity, Arg.Any<CancellationToken>());

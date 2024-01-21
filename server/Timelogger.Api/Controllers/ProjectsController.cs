@@ -15,7 +15,6 @@ namespace Timelogger.Api.Controllers
         {
         }
 
-
         // GET api/projects
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProjectDto>>> Get()

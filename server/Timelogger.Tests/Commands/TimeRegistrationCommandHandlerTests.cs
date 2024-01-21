@@ -22,7 +22,7 @@ namespace Timelogger.Tests.Commands
             [Frozen] ITimeRegistrationRepository timeRegistrationRepository,
             [Frozen] IProjectRepository projectRepository,
             [Frozen] IMapper mapper,
-            TimeRegistrationCommandHandler handler,
+            TimeRegistrationCommandHandler sut,
             AddTimeRegistrationCommand command,
             TimeRegistration timeRegistrationEntity,
             Project project)
@@ -39,7 +39,7 @@ namespace Timelogger.Tests.Commands
             mapper.Map<TimeRegistration>(Arg.Any<TimeRegistrationDto>()).Returns(timeRegistrationEntity);
 
             // Act
-            var result = await handler.Handle(command, CancellationToken.None);
+            var result = await sut.Handle(command, CancellationToken.None);
 
             // Assert
             result.Should().BeEquivalentTo(CommandResult.Success("Time registration added successfully."));
@@ -57,7 +57,7 @@ namespace Timelogger.Tests.Commands
         public async Task Handle_ShouldFail_WhenDuplicateTimeRegistration(
             [Frozen] ITimeRegistrationRepository timeRegistrationRepository,
             [Frozen] IMapper mapper,
-            TimeRegistrationCommandHandler handler,
+            TimeRegistrationCommandHandler sut,
             TimeRegistration timeRegistrationEntity,
             AddTimeRegistrationCommand command)
         {
@@ -70,7 +70,7 @@ namespace Timelogger.Tests.Commands
             mapper.Map<TimeRegistration>(Arg.Any<TimeRegistrationDto>()).Returns(timeRegistrationEntity);
 
             // Act
-            var result = await handler.Handle(command, CancellationToken.None);
+            var result = await sut.Handle(command, CancellationToken.None);
 
             // Assert
             result.Should().BeEquivalentTo(CommandResult.Fail("Duplicate time registration for the same project."));
@@ -85,7 +85,7 @@ namespace Timelogger.Tests.Commands
             [Frozen] ITimeRegistrationRepository timeRegistrationRepository,
             [Frozen] IProjectRepository projectRepository,
             [Frozen] IMapper mapper,
-            TimeRegistrationCommandHandler handler,
+            TimeRegistrationCommandHandler sut,
             AddTimeRegistrationCommand command,
             TimeRegistration timeRegistrationEntity,
             Project project)
@@ -105,7 +105,7 @@ namespace Timelogger.Tests.Commands
 
 
             // Act
-            var result = await handler.Handle(command, CancellationToken.None);
+            var result = await sut.Handle(command, CancellationToken.None);
 
             // Assert
             result.Should().BeEquivalentTo(CommandResult.Fail("Cannot add time registration to a completed project."));

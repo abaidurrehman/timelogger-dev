@@ -92,7 +92,7 @@ namespace Timelogger.Tests.Commands
             {
                 TimeRegistration = new TimeRegistrationDto
                 {
-                    ProjectId = 1, 
+                    ProjectId = 1,
                     FreelancerId = 1,
                     TaskDescription = "Sample Task",
                     StartTime = DateTime.Now.AddHours(2),
