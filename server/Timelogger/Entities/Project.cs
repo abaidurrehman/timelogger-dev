@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Timelogger.Entities
 {
@@ -11,6 +12,7 @@ namespace Timelogger.Entities
 
     public class Project
     {
+        [Key]
         public int Id { get; set; }
 
         public string Name { get; set; }
