@@ -45,7 +45,6 @@ namespace Timelogger.Api.Tests.Queries
         [AutoNSubstituteData]
         public async Task Handle_ShouldReturnEmptyList_WhenRepositoryReturnsEmptyList(
             [Frozen] ITimeRegistrationRepository timeRegistrationRepository,
-            [Frozen] IMapper mapper,
             TimeRegistrationQueryHandler sut,
             GetTimeRegistrationQueryQuery query)
         {

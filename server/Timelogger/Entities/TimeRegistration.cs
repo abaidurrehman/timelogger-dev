@@ -6,14 +6,11 @@ namespace Timelogger.Entities
 {
     public class TimeRegistration
     {
-        [Key]
-        public int Id { get; set; }
+        [Key] public int Id { get; set; }
 
-        [ForeignKey("Project")]
-        public int ProjectId { get; set; }
+        [ForeignKey("Project")] public int ProjectId { get; set; }
 
-        [ForeignKey("Freelancer")]
-        public int FreelancerId { get; set; }
+        [ForeignKey("Freelancer")] public int FreelancerId { get; set; }
 
         public string TaskDescription { get; set; }
 
