@@ -6,15 +6,16 @@ import { TimeRegistrationApi } from '../api/time-registration-api';
 interface TimeRegistrationFormProps {
     onCloseForm: () => void;
     onSuccessfulSubmit: () => void;
+    defaultProjectId?: number;
 }
 
 const ErrorDisplay: React.FC<{ error?: string }> = ({ error }) => (
     <p style={{ color: 'red' }}>{error}</p>
 );
 
-const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm, onSuccessfulSubmit }) => {
+const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm, onSuccessfulSubmit,defaultProjectId }) => {
     const initialFormData = {
-        projectId: 0,
+        projectId: defaultProjectId || 0,
         taskDescription: '',
         date: new Date().toISOString().split('T')[0],
         startTime: '09:00',
@@ -77,7 +78,7 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
         if (new Date(formData.endTime) > new Date()) {
             errors.endTime = 'End time cannot be in the future.';
         }
-        
+
         setError(errors);
 
         return Object.keys(errors).length === 0;

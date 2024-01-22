@@ -19,7 +19,14 @@ const ProjectTimeRegistration: React.FC<ProjectTimeRegistrationProps> = ({ proje
     const fetchTimeRegistrations = async () => {
         try {
             const times = await TimeRegistrationApi.getTimesForProject(projectId);
-            setTimeRegistrations(times);
+
+            const sortedTimes = times.sort((a, b) => {
+                const startTimeA = new Date(a.startTime).getTime();
+                const startTimeB = new Date(b.startTime).getTime();
+                return startTimeB - startTimeA;
+            });
+
+            setTimeRegistrations(sortedTimes);
         } catch (error: any) {
             console.error('Error fetching time registrations:', error.message);
         }
@@ -46,11 +53,11 @@ const ProjectTimeRegistration: React.FC<ProjectTimeRegistrationProps> = ({ proje
             >
                 Register Time
             </button>
-             {/* Show the TimeRegistrationForm in a modal */}
-             {showTimeRegistrationForm && (
+            {/* Show the TimeRegistrationForm in a modal */}
+            {showTimeRegistrationForm && (
                 <div className="fixed z-10 inset-0 overflow-y-auto">
                     <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-               
+
                         <div className="fixed inset-0 transition-opacity" aria-hidden="true">
                             <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
                         </div>
@@ -62,7 +69,7 @@ const ProjectTimeRegistration: React.FC<ProjectTimeRegistrationProps> = ({ proje
                         <div
                             className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
                         >
-                            <TimeRegistrationForm onCloseForm={handleCloseTimeRegistrationForm} onSuccessfulSubmit={handleCloseTimeRegistrationForm} />
+                            <TimeRegistrationForm defaultProjectId={projectId} onCloseForm={handleCloseTimeRegistrationForm} onSuccessfulSubmit={handleCloseTimeRegistrationForm} />
                         </div>
                     </div>
                 </div>

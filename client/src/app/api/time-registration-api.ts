@@ -17,8 +17,12 @@ export class TimeRegistrationApi {
                 { headers: HEADERS }
             );
             return response.data;
-        } catch (error:any) {
-            throw new Error(`Error adding time registration: ${error.message}`);
+        } catch (error: any) {
+            if (error.response && error.response.data.errors) {
+                return { message: '', errors: error.response.data.errors };
+            } else {
+                return { message: '', errors: [error.message || 'An error occurred while adding the time registration.'] };
+            }
         }
     }
 
@@ -27,7 +31,7 @@ export class TimeRegistrationApi {
             const url = `${BASE_URL}${API_ENDPOINT_TIMEREGISTRATIONS}/GetTimesForProject/${projectId}`;
             const response: AxiosResponse<TimeRegistration[]> = await axios.get<TimeRegistration[]>(url, { headers: HEADERS });
             return response.data;
-        } catch (error:any) {
+        } catch (error: any) {
             throw new Error(`Error fetching times for project: ${error.message}`);
         }
     }
@@ -40,7 +44,7 @@ export class TimeRegistrationApi {
                 { headers: HEADERS }
             );
             return response.data.message.toLowerCase().includes('duplicate');
-        } catch (error:any) {
+        } catch (error: any) {
             console.error('Error checking duplicate time registration:', error);
             return false;
         }
