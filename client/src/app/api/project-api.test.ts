@@ -1,7 +1,6 @@
+import axios from 'axios';
 import { ProjectApi } from './project-api';
-import { HttpHelper } from './http-helper';
 import { Project, ApiResponse, ProjectStatus } from '../shared/types';
-
 
 const sampleProjects: Project[] = [
     { id: 1, name: 'Project 1', deadline: '2024-01-31', status: ProjectStatus.New },
@@ -15,11 +14,7 @@ const newProject: Project = {
     status: ProjectStatus.New,
 };
 
-jest.mock('./http-helper', () => ({
-    HttpHelper: {
-        makeApiRequest: jest.fn(),
-    },
-}));
+jest.mock('axios');
 
 describe('ProjectApi', () => {
     afterEach(() => {
@@ -30,35 +25,35 @@ describe('ProjectApi', () => {
         it('should make a GET request to the correct endpoint and return projects', async () => {
             // Arrange
             const expectedEndpoint = '/projects';
-            (HttpHelper.makeApiRequest as jest.Mock).mockResolvedValue(sampleProjects);
+            (axios.get as jest.Mock).mockResolvedValue({ data: sampleProjects });
 
             // Act
             const result = await ProjectApi.getProjects();
 
             // Assert
-            expect(HttpHelper.makeApiRequest).toHaveBeenCalledWith(
-                expectedEndpoint,
-                'GET'
+            expect(axios.get).toHaveBeenCalledWith(
+                expect.stringContaining(expectedEndpoint),
+                expect.any(Object)
             );
             expect(result).toEqual(sampleProjects);
         });
     });
 
-    describe('registerProject', () => {
+    describe('addProject', () => {
         it('should make a POST request to the correct endpoint with the provided new project', async () => {
             // Arrange
             const expectedEndpoint = '/projects';
             const successApiResponse: ApiResponse = { message: 'Project registered successfully' };
-            (HttpHelper.makeApiRequest as jest.Mock).mockResolvedValue(successApiResponse);
+            (axios.post as jest.Mock).mockResolvedValue({ data: successApiResponse });
 
             // Act
-            const result = await ProjectApi.registerProject(newProject);
+            const result = await ProjectApi.addProject(newProject);
 
             // Assert
-            expect(HttpHelper.makeApiRequest).toHaveBeenCalledWith(
-                expectedEndpoint,
-                'POST',
-                newProject
+            expect(axios.post).toHaveBeenCalledWith(
+                expect.stringContaining(expectedEndpoint),
+                newProject,
+                expect.any(Object)
             );
             expect(result).toEqual(successApiResponse);
         });

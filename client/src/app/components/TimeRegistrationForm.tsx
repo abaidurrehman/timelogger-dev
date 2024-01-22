@@ -70,6 +70,14 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
             errors.endTime = 'End Time must be greater than Start Time and at least 30 minutes later.';
         }
 
+        if (new Date(formData.startTime) > new Date()) {
+            errors.startTime = 'Start time cannot be in the future.';
+        }
+
+        if (new Date(formData.endTime) > new Date()) {
+            errors.endTime = 'End time cannot be in the future.';
+        }
+        
         setError(errors);
 
         return Object.keys(errors).length === 0;

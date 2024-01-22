@@ -118,4 +118,31 @@ describe('TimeRegistrationForm', () => {
       expect(TimeRegistrationApi.addTimeRegistration).not.toHaveBeenCalled();
     });
   });
+
+  it('displays error for End Time earlier than Start Time', async () => {
+    // Arrange
+    const mockProjects = [
+      { id: 1, name: 'Project 1', deadline: '2024-01-30', status: ProjectStatus.InProgress },
+      { id: 2, name: 'Project 2', deadline: '2024-02-15', status: ProjectStatus.Complete },
+    ];
+
+    jest.spyOn(ProjectApi, 'getProjects').mockResolvedValueOnce(mockProjects);
+    jest.spyOn(TimeRegistrationApi, 'addTimeRegistration').mockResolvedValueOnce({ message: 'Time registration added successfully' });
+    render(<TimeRegistrationForm onCloseForm={() => {}} onSuccessfulSubmit={() => {}} />);
+
+    // Act
+    fireEvent.change(screen.getByLabelText(/Project:/i), { target: { value: 1 } });
+    fireEvent.change(screen.getByLabelText(/Task Description:/i), { target: { value: 'Test task' } });
+    fireEvent.change(screen.getByLabelText(/Date:/i), { target: { value: '2022-01-01' } });
+    fireEvent.change(screen.getByLabelText(/Start Time:/i), { target: { value: '12:00' } });
+    fireEvent.change(screen.getByLabelText(/End Time:/i), { target: { value: '11:30' } });
+
+    fireEvent.submit(screen.getByTestId('submit-button'));
+
+    await waitFor(() => {
+      // Assert
+      expect(screen.getByText('End Time must be greater than Start Time and at least 30 minutes later.')).toBeInTheDocument();
+      expect(TimeRegistrationApi.addTimeRegistration).not.toHaveBeenCalled();
+    });
+  });
 });

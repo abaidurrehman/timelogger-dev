@@ -1,14 +1,29 @@
+import axios, { AxiosResponse } from 'axios';
 import { ApiResponse, Project } from "../shared/types";
-import { HttpHelper } from "./http-helper";
+
+const BASE_URL = "http://localhost:3001/api";
+const API_ENDPOINT_PROJECTS = "/projects";
+
+const HEADERS = {
+    'Content-Type': 'application/json',
+};
 
 export class ProjectApi {
-    private static API_ENDPOINT_PROJECTS = "/projects";
-
     static async getProjects(): Promise<Project[]> {
-        return HttpHelper.makeApiRequest(this.API_ENDPOINT_PROJECTS, 'GET');
+        try {
+            const response: AxiosResponse<Project[]> = await axios.get<Project[]>(`${BASE_URL}${API_ENDPOINT_PROJECTS}`, { headers: HEADERS });
+            return response.data;
+        } catch (error:any) {
+            throw new Error(`Error fetching projects: ${error.message}`);
+        }
     }
 
-    static async registerProject(newProject: Project): Promise<ApiResponse> {
-        return HttpHelper.makeApiRequest(this.API_ENDPOINT_PROJECTS, 'POST', newProject);
+    static async addProject(newProject: Project): Promise<ApiResponse> {
+        try {
+            const response: AxiosResponse<ApiResponse> = await axios.post<ApiResponse>(`${BASE_URL}${API_ENDPOINT_PROJECTS}`, newProject, { headers: HEADERS });
+            return response.data;
+        } catch (error:any) {
+            throw new Error(`Error registering project: ${error.message}`);
+        }
     }
 }

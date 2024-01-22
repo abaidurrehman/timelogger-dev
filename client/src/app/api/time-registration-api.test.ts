@@ -1,5 +1,5 @@
+import axios from 'axios';
 import { TimeRegistrationApi } from './time-registration-api';
-import { HttpHelper } from './http-helper';
 import { TimeRegistration } from '../shared/types';
 
 const timeRegistrationMock: TimeRegistration = {
@@ -11,30 +11,23 @@ const timeRegistrationMock: TimeRegistration = {
   endTime: '05:00 PM',
 };
 
-jest.mock('./http-helper', () => ({
-  HttpHelper: {
-    makeApiRequest: jest.fn(),
-  },
-}));
+jest.mock('axios');
 
 describe('TimeRegistrationApi', () => {
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
   describe('addTimeRegistration', () => {
     it('should make a POST request to the correct endpoint with the provided data', async () => {
       // Arrange
       const expectedEndpoint = '/timeregistration';
+      (axios.post as jest.Mock).mockResolvedValue({ data: {} });
 
       // Act
       await TimeRegistrationApi.addTimeRegistration(timeRegistrationMock);
 
       // Assert
-      expect(HttpHelper.makeApiRequest).toHaveBeenCalledWith(
-        expectedEndpoint,
-        'POST',
-        timeRegistrationMock
+      expect(axios.post).toHaveBeenCalledWith(
+        expect.stringContaining(expectedEndpoint),
+        timeRegistrationMock,
+        expect.any(Object)
       );
     });
   });
@@ -44,14 +37,15 @@ describe('TimeRegistrationApi', () => {
       // Arrange
       const projectId = 123;
       const expectedEndpoint = `/timeregistration/GetTimesForProject/${projectId}`;
+      (axios.get as jest.Mock).mockResolvedValue({ data: {} });
 
       // Act
       await TimeRegistrationApi.getTimesForProject(projectId);
 
       // Assert
-      expect(HttpHelper.makeApiRequest).toHaveBeenCalledWith(
-        expectedEndpoint,
-        'GET'
+      expect(axios.get).toHaveBeenCalledWith(
+        expect.stringContaining(expectedEndpoint),
+        expect.any(Object)
       );
     });
   });
@@ -59,8 +53,8 @@ describe('TimeRegistrationApi', () => {
   describe('checkDuplicateTime', () => {
     it('should return true if response message contains "duplicate"', async () => {
       // Arrange
-      const mockResponse = { message: 'Duplicate time entry' };
-      (HttpHelper.makeApiRequest as jest.Mock).mockResolvedValue(mockResponse);
+      const mockResponse = { data: { message: 'Duplicate time entry' } };
+      (axios.post as jest.Mock).mockResolvedValue(mockResponse);
 
       // Act
       const result = await TimeRegistrationApi.checkDuplicateTime(timeRegistrationMock);
