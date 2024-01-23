@@ -4,8 +4,8 @@ namespace Timelogger.Api.Controllers
 {
     public class ApiResponse
     {
-        public string Message { get; internal set; }
+        public string Message { get; set; }
 
-        public List<string> Errors { get; internal set; }
+        public List<string> Errors { get; set; }
     }
 }

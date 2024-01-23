@@ -85,6 +85,12 @@ namespace Timelogger.Api
         {
             var context = scope.ServiceProvider.GetService<TimeloggerDbContext>();
 
+            // Clear existing data
+            context.Database.EnsureDeleted();
+
+            // Recreate the database
+            context.Database.EnsureCreated();
+
             var testFreelancer = new Freelancer
             {
                 Id = 1,
@@ -95,7 +101,6 @@ namespace Timelogger.Api
 
             var testProject1 = new Project
             {
-                Id = 1,
                 Name = "e-conomic Interview",
                 Deadline = DateTime.Today.AddDays(15),
                 Status = ProjectStatus.New
@@ -103,7 +108,6 @@ namespace Timelogger.Api
 
             var testProject2 = new Project
             {
-                Id = 2,
                 Name = "HR App",
                 Deadline = DateTime.Today.AddDays(1),
                 Status = ProjectStatus.InProgress
@@ -111,7 +115,6 @@ namespace Timelogger.Api
 
             var testProject3 = new Project
             {
-                Id = 3,
                 Name = "Approval Workflow",
                 Deadline = DateTime.Today.AddDays(20),
                 Status = ProjectStatus.InProgress
@@ -119,7 +122,6 @@ namespace Timelogger.Api
 
             var testProject4 = new Project
             {
-                Id = 4,
                 Name = "Accounting System",
                 Deadline = DateTime.Today.AddDays(-2),
                 Status = ProjectStatus.Complete

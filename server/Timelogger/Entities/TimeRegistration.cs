@@ -6,7 +6,7 @@ namespace Timelogger.Entities
 {
     public class TimeRegistration
     {
-        [Key] public int Id { get; set; }
+        [Key][DatabaseGenerated(DatabaseGeneratedOption.Identity)] public int Id { get; set; }
 
         [ForeignKey("Project")] public int ProjectId { get; set; }
 
