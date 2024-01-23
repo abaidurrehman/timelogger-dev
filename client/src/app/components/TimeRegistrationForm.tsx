@@ -120,7 +120,7 @@ const TimeRegistrationForm: React.FC<TimeRegistrationFormProps> = ({ onCloseForm
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        const updatedValue = name === 'projectId' ? parseInt(value, 10) : value;
+        const updatedValue = name === 'projectId' ? parseInt(value, 10) || 0 : value;
 
         setFormData({
             ...formData,

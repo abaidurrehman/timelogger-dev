@@ -25,7 +25,7 @@ const ProjectTimeRegistration: React.FC<ProjectTimeRegistrationProps> = ({ proje
                 const startTimeB = new Date(b.startTime).getTime();
                 return startTimeB - startTimeA;
             });
-
+    
             setTimeRegistrations(sortedTimes);
         } catch (error: any) {
             console.error('Error fetching time registrations:', error.message);
@@ -66,9 +66,8 @@ const ProjectTimeRegistration: React.FC<ProjectTimeRegistrationProps> = ({ proje
                         <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
                             &#8203;
                         </span>
-                        <div
-                            className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
-                        >
+                        <div  data-testid="time-registration-form"
+                            className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
                             <TimeRegistrationForm defaultProjectId={projectId} onCloseForm={handleCloseTimeRegistrationForm} onSuccessfulSubmit={handleCloseTimeRegistrationForm} />
                         </div>
                     </div>
