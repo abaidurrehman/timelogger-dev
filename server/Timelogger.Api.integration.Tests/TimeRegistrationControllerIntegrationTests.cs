@@ -34,7 +34,7 @@ namespace Timelogger.Api.integration.Tests
             // Arrange
             var newTimeRegistration = new TimeRegistrationDto
             {
-                ProjectId = 1, 
+                ProjectId = 1,
                 FreelancerId = 1,
                 TaskDescription = "New Task",
                 StartTime = DateTime.Now.AddHours(-2),
@@ -42,7 +42,8 @@ namespace Timelogger.Api.integration.Tests
             };
 
             // Act
-            var jsonContent = new StringContent(JsonConvert.SerializeObject(newTimeRegistration), Encoding.UTF8, "application/json");
+            var jsonContent = new StringContent(JsonConvert.SerializeObject(newTimeRegistration), Encoding.UTF8,
+                "application/json");
             var response = await Client.PostAsync("/api/timeregistration", jsonContent);
             response.EnsureSuccessStatusCode();
 
@@ -58,15 +59,16 @@ namespace Timelogger.Api.integration.Tests
             // Arrange
             await AddSampleTimeRegistrationEntries();
 
-            var initialTimeRegistrationsResponse = await Client.GetAsync("/api/timeregistration/GetTimesForProject/1"); 
+            var initialTimeRegistrationsResponse = await Client.GetAsync("/api/timeregistration/GetTimesForProject/1");
             initialTimeRegistrationsResponse.EnsureSuccessStatusCode();
             var initialTimeRegistrationsJson = await initialTimeRegistrationsResponse.Content.ReadAsStringAsync();
-            var initialTimeRegistrations = JsonConvert.DeserializeObject<List<TimeRegistrationDto>>(initialTimeRegistrationsJson);
+            var initialTimeRegistrations =
+                JsonConvert.DeserializeObject<List<TimeRegistrationDto>>(initialTimeRegistrationsJson);
             var initialTimeRegistrationsCount = initialTimeRegistrations.Count;
 
             var newTimeRegistration = new TimeRegistrationDto
             {
-                ProjectId = 1, 
+                ProjectId = 1,
                 FreelancerId = 1,
                 TaskDescription = "New Task",
                 StartTime = DateTime.Now.AddHours(-4),
@@ -74,14 +76,16 @@ namespace Timelogger.Api.integration.Tests
             };
 
             // Act
-            var jsonContent = new StringContent(JsonConvert.SerializeObject(newTimeRegistration), Encoding.UTF8, "application/json");
+            var jsonContent = new StringContent(JsonConvert.SerializeObject(newTimeRegistration), Encoding.UTF8,
+                "application/json");
             await Client.PostAsync("/api/timeregistration", jsonContent);
 
             // Assert
-            var finalTimeRegistrationsResponse = await Client.GetAsync("/api/timeregistration/GetTimesForProject/1"); 
+            var finalTimeRegistrationsResponse = await Client.GetAsync("/api/timeregistration/GetTimesForProject/1");
             finalTimeRegistrationsResponse.EnsureSuccessStatusCode();
             var finalTimeRegistrationsJson = await finalTimeRegistrationsResponse.Content.ReadAsStringAsync();
-            var finalTimeRegistrations = JsonConvert.DeserializeObject<List<TimeRegistrationDto>>(finalTimeRegistrationsJson);
+            var finalTimeRegistrations =
+                JsonConvert.DeserializeObject<List<TimeRegistrationDto>>(finalTimeRegistrationsJson);
             var finalTimeRegistrationsCount = finalTimeRegistrations.Count;
 
             Assert.Equal(initialTimeRegistrationsCount + 1, finalTimeRegistrationsCount);
@@ -93,26 +97,27 @@ namespace Timelogger.Api.integration.Tests
             {
                 new TimeRegistrationDto
                 {
-                    ProjectId = 1, 
-                    FreelancerId = 1, 
+                    ProjectId = 1,
+                    FreelancerId = 1,
                     TaskDescription = "Sample Task 1",
                     StartTime = DateTime.Now.AddHours(-8),
-                    EndTime = DateTime.Now.AddHours(-7),
+                    EndTime = DateTime.Now.AddHours(-7)
                 },
                 new TimeRegistrationDto
                 {
-                    ProjectId = 1, 
-                    FreelancerId = 1, 
+                    ProjectId = 1,
+                    FreelancerId = 1,
                     TaskDescription = "Sample Task 2",
                     StartTime = DateTime.Now.AddHours(-10),
-                    EndTime =DateTime.Now.AddHours(-9),
+                    EndTime = DateTime.Now.AddHours(-9)
                 }
                 // Add more entries as needed
             };
 
             foreach (var timeRegistration in sampleTimeRegistrations)
             {
-                var jsonContent = new StringContent(JsonConvert.SerializeObject(timeRegistration), Encoding.UTF8, "application/json");
+                var jsonContent = new StringContent(JsonConvert.SerializeObject(timeRegistration), Encoding.UTF8,
+                    "application/json");
                 var apiResponseJson = await Client.PostAsync("/api/timeregistration", jsonContent);
             }
         }

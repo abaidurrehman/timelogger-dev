@@ -1,17 +1,13 @@
-﻿using Microsoft.AspNetCore.TestHost;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
+﻿using System.Net.Http;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.TestHost;
 
 namespace Timelogger.Api.integration.Tests
 {
     public class IntegrationTestBase
     {
-        protected readonly TestServer Server;
         protected readonly HttpClient Client;
+        protected readonly TestServer Server;
 
         public IntegrationTestBase()
         {
