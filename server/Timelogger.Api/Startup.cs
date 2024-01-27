@@ -93,7 +93,6 @@ namespace Timelogger.Api
 
             var testFreelancer = new Freelancer
             {
-                Id = 1,
                 Name = "Abaid"
             };
 
