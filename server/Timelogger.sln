@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timelogger.Tests", "Timelog
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timelogger.Api.integration.Tests", "Timelogger.Api.integration.Tests\Timelogger.Api.integration.Tests.csproj", "{2058582F-899A-409D-ACAE-82984A8A683E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timelogger.AcceptanceTests", "Timelogger.AcceptanceTests\Timelogger.AcceptanceTests.csproj", "{11447584-8DB2-48F2-956F-98DDD18CB6ED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{2058582F-899A-409D-ACAE-82984A8A683E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2058582F-899A-409D-ACAE-82984A8A683E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2058582F-899A-409D-ACAE-82984A8A683E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11447584-8DB2-48F2-956F-98DDD18CB6ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11447584-8DB2-48F2-956F-98DDD18CB6ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11447584-8DB2-48F2-956F-98DDD18CB6ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11447584-8DB2-48F2-956F-98DDD18CB6ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
